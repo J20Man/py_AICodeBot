@@ -10,10 +10,6 @@ client = genai.Client(api_key=api_key)
 
 
 def main():
-    
-    
-
-
 
     if len(sys.argv) > 1:
         # Gets the User Prompt
@@ -30,7 +26,12 @@ def main():
         # Prints the response and token usage
         response_tokens = response.usage_metadata.candidates_token_count
         prompt_tokens = response.usage_metadata.prompt_token_count
-        print(f"{response.text} \n Prompt tokens: {prompt_tokens} \n Response tokens: {response_tokens}")
+        
+        if "--verbose" in sys.argv:
+            print(f"User prompt: {response.text} \n Prompt tokens: {prompt_tokens} \n Response tokens: {response_tokens}")
+        else:
+            sys.exit(1)
+        
     
 
         
