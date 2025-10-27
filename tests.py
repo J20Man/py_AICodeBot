@@ -1,17 +1,31 @@
 from functions.write_file import write_file
+from functions.run_python_file import run_python_file
 
 def test():
-    result = write_file("calculator", "lorem.txt", "wait, this isn't lorem ipsum")
-    print("Result for current directory:")
+    result = run_python_file("calculator", "main.py")
+    print("Result for Calculators")
     print(result)
 
-    result = write_file("calculator", "pkg/morelorem.txt", "lorem ipsum dolor sit amet")
-    print("Result for 'pkg' directory:")
+    result = run_python_file("calculator", "main.py", ["3 + 5"])
+    print("Printing calc result")
     print(result)
 
-    result = write_file("calculator", "/tmp/temp.txt", "this should not be allowed")
-    print("Result for '/bin' directory")
+    result = run_python_file("calculator", "tests.py")
     print(result)
+
+    result = run_python_file("calculator", "../main.py")
+    print("this should be an error")
+    print(result)
+
+    result = run_python_file("calculator", "nonexistent.py")
+    print("This should be an error")
+    print(result)
+
+    result = run_python_file("calculator", "lorem.txt")
+    print("this should be an error")
+    print(result)
+
+
 
 if __name__ == "__main__":
     test()
