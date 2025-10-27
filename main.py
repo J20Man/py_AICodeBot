@@ -1,48 +1,62 @@
 import os
 import sys
+from config import SYSTEM_PROMPT
 from dotenv import load_dotenv
 from google import genai
 from google.genai import types
 
-load_dotenv()
-api_key = os.environ.get("GEMINI_API_KEY")
-client = genai.Client(api_key=api_key)
-
 
 def main():
+    load_dotenv()
+    verbose = "--verbose" in sys.argv
+    args = []
+    for arg in sys.argv[1:]:
+        if not arg.startswith("--"):
+            args.append(arg)
+    
+    if not args:
+        print("AI Code Assistant")
+        print('\nUsage: python main.py "your prompt here" [--verbose]')
+        sys.exit(1)
 
-    if len(sys.argv) > 1:
-        # Gets the User Prompt
-        user_prompt = sys.argv[1]
-        # Stores the message history
-        messages = [
+    api_key = os.environ.get("GEMINI_API_KEY")
+    client = genai.Client(api_key=api_key)
+
+    user_prompt = " ".join(args)
+
+    if verbose:
+        print(f"User prompt: {user_prompt}\n")
+
+    messages = [
         types.Content(role="user", parts=[types.Part(text=user_prompt)]),
         ]
-        # API Call 
+    
+    generate_content(client, messages, verbose)
+
+        
+def generate_content(client, messages, verbose):
+    if len(sys.argv) > 1: 
         response = client.models.generate_content(
             model='gemini-2.0-flash-001', 
             contents=messages,
+            config=types.GenerateContentConfig(system_instruction=SYSTEM_PROMPT)
         )
-        # Prints the response and token usage
-        response_tokens = response.usage_metadata.candidates_token_count
-        prompt_tokens = response.usage_metadata.prompt_token_count
         
-        if "--verbose" in sys.argv:
+        try:
+            generated_text = response.candidates[0].content[0].text
+        except Exception:
+            generated_text = response.text
+
+        print(generated_text)
+
+        if verbose:
+            response_tokens = response.usage_metadata.candidates_token_count
+            prompt_tokens = response.usage_metadata.prompt_token_count
             print(f"User prompt: {response.text} \n Prompt tokens: {prompt_tokens} \n Response tokens: {response_tokens}")
-        else:
-            sys.exit(1)
         
-    
-
-        
-
     else:
         print("Please provide a prompt as a command-line argument.")
         sys.exit(1)
-        
-
-
-
 
 if __name__ == "__main__":
     main()
