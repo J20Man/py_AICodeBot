@@ -20,6 +20,10 @@ def run_python_file(working_directory, file_path, args=[]):
             capture_output=True,
             text=True
         )
+        stdout = result_file.stdout.strip()
+        stderr = result_file.stderr.strip()
+        if not stdout and not stderr:
+            return 'No output prodcued'
 
         if not result_file.returncode == 0:
             return f'Process exited with code {result_file.returncode}'

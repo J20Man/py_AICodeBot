@@ -58,25 +58,38 @@ def generate_content(client, messages, verbose):
                 for call in response.function_calls:
 
                     if call.name == "get_files_info":
-                        directory = call.args.get("directory", ".")
-                        result = get_files_info(os.getcwd(), directory)
-                        print(result)
+                        func = {
+                            call.name: call.args
+                        }
+                        print(f"Calling function: {func}")
 
                     elif call.name == "get_file_content":
-                        filename = call.args.get("filename")
-                        result = get_file_content(os.getcwd(), filename)
-                        print(result)
+                        # filename = call.args.get("filename")
+                        # result = get_file_content(os.getcwd(), filename)
+                        # print(result)
+                        func = {
+                            call.name: call.args
+                        }
+                        print(f"Calling function: {func}")
 
                     elif call.name == "write_file":
-                        filename = call.args.get("filename")
-                        contents = call.args.get("contents")
-                        result = write_file(os.getcwd(), filename, contents)
-                        print(result)
+                        # filename = call.args.get("filename")
+                        # contents = call.args.get("contents")
+                        # result = write_file(os.getcwd(), filename, contents)
+                        # print(result)
+                        func = {
+                            call.name: call.args
+                        }
+                        print(f"Calling function: {func}")
 
                     elif call.name == "run_python_file":
-                        filename = call.args.get("filename")
-                        result = run_python_file(os.getcwd(), filename)
-                        print(result)
+                        # filename = call.args.get("filename")
+                        # result = run_python_file(os.getcwd(), filename)
+                        # print(result)
+                        func = {
+                            call.name: call.args
+                        }
+                        print(f"Calling function: {func}")
 
                     else:
                         print(f"Unknown function call: {call.name}")
