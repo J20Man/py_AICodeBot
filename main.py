@@ -4,7 +4,10 @@ from config import SYSTEM_PROMPT
 from dotenv import load_dotenv
 from google import genai
 from google.genai import types
-from functions.get_files_info import available_functions
+from functions.get_files_info import available_functions, get_files_info
+from functions.get_file_content import get_file_content
+from functions.write_file import write_file
+from functions.run_python_file import run_python_file
 
 
 def main():
@@ -52,12 +55,32 @@ def generate_content(client, messages, verbose):
             if not response.function_calls:
                 generated_text = response.candidates[0].content[0].text
             if response.function_calls:
-                called_functions = []
                 for call in response.function_calls:
-                    func = {
-                        call.name: call.args
-                    }
-                    print(f"Calling function: {func}")
+
+                    if call.name == "get_files_info":
+                        directory = call.args.get("directory", ".")
+                        result = get_files_info(os.getcwd(), directory)
+                        print(result)
+
+                    elif call.name == "get_file_content":
+                        filename = call.args.get("filename")
+                        result = get_file_content(os.getcwd(), filename)
+                        print(result)
+
+                    elif call.name == "write_file":
+                        filename = call.args.get("filename")
+                        contents = call.args.get("contents")
+                        result = write_file(os.getcwd(), filename, contents)
+                        print(result)
+
+                    elif call.name == "run_python_file":
+                        filename = call.args.get("filename")
+                        result = run_python_file(os.getcwd(), filename)
+                        print(result)
+
+                    else:
+                        print(f"Unknown function call: {call.name}")
+
         except Exception:
             generated_text = response.text
 
