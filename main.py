@@ -4,7 +4,8 @@ from config import SYSTEM_PROMPT
 from dotenv import load_dotenv
 from google import genai
 from google.genai import types
-from functions.get_files_info import available_functions, get_files_info
+from schemas.func_calls import available_functions
+from functions.get_files_info import get_files_info
 from functions.get_file_content import get_file_content
 from functions.write_file import write_file
 from functions.run_python_file import run_python_file

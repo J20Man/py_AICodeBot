@@ -8,6 +8,11 @@ wheels/
 
 # Virtual environments
 .venv
+uv.lock
 
-# Sensitive Infor
+# Sensitive Info
 .env 
+
+# Test Cases
+tests.py
+calculator/test.py

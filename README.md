@@ -1,0 +1,1 @@
+A CLI tool that allows google gemini to access read and write to files
