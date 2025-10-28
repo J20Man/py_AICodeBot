@@ -4,6 +4,7 @@ from config import SYSTEM_PROMPT
 from dotenv import load_dotenv
 from google import genai
 from google.genai import types
+from functions.get_files_info import available_functions
 
 
 def main():
@@ -39,11 +40,24 @@ def generate_content(client, messages, verbose):
         response = client.models.generate_content(
             model='gemini-2.0-flash-001', 
             contents=messages,
-            config=types.GenerateContentConfig(system_instruction=SYSTEM_PROMPT)
+            config=types.GenerateContentConfig(
+                tools=[available_functions], 
+                system_instruction=SYSTEM_PROMPT
+            ),
         )
+
+        generated_text = ""
         
         try:
-            generated_text = response.candidates[0].content[0].text
+            if not response.function_calls:
+                generated_text = response.candidates[0].content[0].text
+            if response.function_calls:
+                called_functions = []
+                for call in response.function_calls:
+                    func = {
+                        call.name: call.args
+                    }
+                    print(f"Calling function: {func}")
         except Exception:
             generated_text = response.text
 
